@@ -5,7 +5,7 @@ import java.util.Stack;
 
 public class MatrixUtils
 {
-    public static float[] evaluateRowOperation(String operation, Matrix matrix)
+    public static Cell[] evaluateRowOperation(String operation, Matrix matrix)
     {
         String[] tokens = operation.split("=");
 
@@ -22,28 +22,29 @@ public class MatrixUtils
             return null; // Target row doesn't exist in the matrix
         }
 
-        float[] result = evaluateExpression(expression, matrix);
+        Cell[] result = evaluateExpression(expression, matrix);
 
         matrix.replaceRow(targetRow, result);
 
         return result;
     }
 
-    public static float[] evaluateExpression(String expression, Matrix matrix)
+    public static Cell[] evaluateExpression(String expression, Matrix matrix)
     {
         int rowLength = matrix.getRow("r2").length;
 
         // Gets the first token in the expression (target row)
         String[] tokens = expression.split(" ");
-        //String[] tokens = expression.split("[+\\-*/]");
-        float[] result = new float[matrix.getRow(tokens[0]).length];
+        //String[] tokens = expression.split("[+\\-*/]"); // TODO: Allow expression without requiring spaces
+
+        Cell[] result = new Cell[matrix.getRow(tokens[0]).length];
         // Copies the target row into the result array
         System.arraycopy(matrix.getRow(tokens[0]), 0, result, 0, result.length);
 
         for (int i = 1; i < tokens.length; i += 2) {
             String operator = tokens[i];
             String sourceRow = tokens[i + 1];
-            float [] rowValues = new float[rowLength];
+            Cell [] rowValues = new Cell[rowLength];
 
             if(sourceRow.startsWith("r")) //if r has no scalar applied (ie: r2 = r3 + r1)
             {
@@ -51,7 +52,7 @@ public class MatrixUtils
             }
             else if(sourceRow.contains("r")) //if r has a scalar applied (ie: r2 = r2 + 5r1)
             {
-                float scalar = Float.parseFloat(sourceRow.substring(0, sourceRow.indexOf("r")));
+                Cell scalar = CellUtils.stringToFraction(sourceRow.substring(0, sourceRow.indexOf("r")));
                 sourceRow = sourceRow.substring(sourceRow.indexOf("r")); // remove scalars from in from of sourceRow for
                 rowValues = applyScalarToRow(matrix, sourceRow, scalar);
             }
@@ -59,30 +60,30 @@ public class MatrixUtils
             {
                 for (int j = 0; j < rowValues.length; j++)
                 {
-                    rowValues[j] = Float.parseFloat(sourceRow);
+                    rowValues[j] = CellUtils.stringToFraction(sourceRow);
                 }
             }
 
             switch (operator) {
                 case "+":
                     for (int j = 0; j < result.length; j++) {
-                        result[j] += rowValues[j];
+                        result[j].addCell(rowValues[j]);
                     }
                     break;
                 case "-":
                     for (int j = 0; j < result.length; j++) {
-                        result[j] -= rowValues[j];
+                        result[j].subtractCell(rowValues[j]);
                     }
                     break;
                 case "*":
                     for (int j = 0; j < result.length; j++) {
-                        result[j] *= rowValues[j];
+                        result[j].multiplyCell(rowValues[j]);
                     }
                     break;
                 case "/":
                     for (int j = 0; j < result.length; j++) {
-                        if (rowValues[j] != 0) {
-                            result[j] /= rowValues[j];
+                        if (rowValues[j].getNumerator() != 0) {
+                            result[j].divideCell(rowValues[j]);
                         } else {
                             return null; // Division by zero
                         }
@@ -95,13 +96,14 @@ public class MatrixUtils
         return result;
     }
 
-    public static float[] applyScalarToRow(Matrix m, String targetRow, float scalar)
+    public static Cell[] applyScalarToRow(Matrix m, String targetRow, Cell scalar)
     {
-        float[] originalRow = m.getRow(targetRow);
-        float[] resultRow = new float[originalRow.length]; // Do this to avoid altering original row values
+        Cell[] originalRow = m.getRow(targetRow);
+        Cell[] resultRow = new Cell[originalRow.length]; // Do this to avoid altering original row values
 
         for (int i = 0; i < originalRow.length; i++) {
-            resultRow[i] = originalRow[i] * scalar;
+            resultRow[i] = originalRow[i];
+            resultRow[i].multiplyCell(scalar);
         }
 
         return resultRow;
@@ -115,7 +117,7 @@ public class MatrixUtils
 
         for (int i = 0; i < transposeRows; i++)
         {
-            float[] column = m.getColumn(i);
+            Cell[] column = m.getColumn(i);
             for (int j = 0; j < transposeCols; j++)
             {
                 transposeString.append(column[j]).append(" ");

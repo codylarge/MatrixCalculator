@@ -52,8 +52,8 @@ public class SystemInterface
                 break;
             case 3:
                 System.out.println("Scalar to multiply 'A' by: ");
-                float scalar = sc.nextFloat(); sc.nextLine();
-                matrix.applyScalar(scalar);
+                String scalar = sc.nextLine();
+                matrix.applyScalar(CellUtils.stringToFraction(scalar));
                 System.out.println("result: " + matrix);
                 break;
             case 4:

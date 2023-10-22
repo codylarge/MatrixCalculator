@@ -5,7 +5,7 @@ import java.util.Scanner;
 // This class represents a matrix object
 public class Matrix
 {
-    Map<String, float[]> matrix; //Hashmap
+    Map<String, Cell[]> matrix; //Hashmap "r2" : [Fraction, Fraction, Fraction...]
     final int rows;
     Scanner sc;
 
@@ -35,7 +35,7 @@ public class Matrix
         {
             System.out.print("Enter row " + i + ": ");
             String rowString = sc.nextLine();
-            float[] row = Utils.stringToFloatArray(rowString);
+            Cell[] row = CellUtils.stringToCellArray(rowString);
             matrix.put("r" + i, row);
         }
     }
@@ -47,11 +47,11 @@ public class Matrix
         {
             // Remove leading and trailing whitespace, and then split by spaces
             String[] rowArray = rowString.trim().split(" ");
-            float[] row = new float[rowArray.length];
+            Cell[] row = new Cell[rowArray.length];
             for (int i = 0; i < rowArray.length; i++)
             {
                 // Parse the individual numbers as floats and store them in the row array
-                row[i] = Float.parseFloat(rowArray[i]);
+                row[i] = CellUtils.stringToFraction(rowArray[i]);
             }
             matrix.put("r" + rowIndex, row);
             rowIndex++; // Increment the row index
@@ -61,7 +61,7 @@ public class Matrix
     public void performOperation(String operation)
     {
         //String operation = "r2 = r3 + r4 / 2";// - Doesn't work, divides by 2 AFTER
-        float[] result = MatrixUtils.evaluateRowOperation(operation, this);
+        Cell[] result = MatrixUtils.evaluateRowOperation(operation, this);
 
         String targetRow = operation.split("=")[0].trim();
         if (result != null && targetRow.startsWith("r")) {
@@ -70,28 +70,28 @@ public class Matrix
             System.out.println("Invalid operation.");
         }
     }
-    public void applyScalar(float scalar)
+    public void applyScalar(Cell scalar)
     {
         for (int i = 1; i < this.getRows() + 1; i++)
         {
             for (int j = 0; j < this.getCols(); j++)
             {
-                this.getRow("r" + i)[j] *= scalar;
+                this.getRow("r" + i)[j].multiplyCell(scalar);
             }
         }
     }
 
-    public void replaceRow(String targetRow, float[] newRow)
+    public void replaceRow(String targetRow, Cell[] newRow)
     {
         this.matrix.put(targetRow, newRow);
     }
-    public float[] getRow(String targetRow)
+    public Cell[] getRow(String targetRow)
     {
         return this.matrix.get(targetRow);
     }
-    public float[] getColumn(int targetColumn)
+    public Cell[] getColumn(int targetColumn)
     {
-        float[] column = new float[this.getRows()];
+        Cell[] column = new Cell[this.getRows()];
         for (int i = 1; i < this.getRows() + 1; i++)
         {
             column[i - 1] = this.getRow("r" + i)[targetColumn];
@@ -123,7 +123,7 @@ public class Matrix
         return MatrixUtils.calculateTranspose(this);
     }
 
-    public Map<String, float[]> getMatrix()
+    public Map<String, Cell[]> getMatrix()
     {
         return this.matrix;
     }
