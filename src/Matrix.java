@@ -58,17 +58,8 @@ public class Matrix
         }
     }
 
-    public void performOperation()
+    public void performOperation(String operation)
     {
-        this.sc = new Scanner(System.in);
-
-        String operation = "?";
-        while(operation.equals("?"))
-        {
-            System.out.print("Enter the operation(? for formatting): ");
-            operation = sc.nextLine();
-            if (operation.equals("?")) MatrixUtils.formattingMenu();
-        }
         //String operation = "r2 = r3 + r4 / 2";// - Doesn't work, divides by 2 AFTER
         float[] result = MatrixUtils.evaluateRowOperation(operation, this);
 

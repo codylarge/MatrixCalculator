@@ -30,7 +30,22 @@ public class SystemInterface
         switch(choice)
         {
             case 1:
-                matrix.performOperation();
+                this.sc = new Scanner(System.in);
+                System.out.println("Enter 0 at any point to exit row operations");
+                String operation = "";
+                while(!operation.equals("0"))
+                {
+                    operation = "?";
+                    while(operation.equals("?"))
+                    {
+                        System.out.print("Enter the operation(? for formatting): ");
+                        operation = sc.nextLine();
+                        if (operation.equals("?")) MatrixUtils.formattingMenu();
+                    }
+
+                    matrix.performOperation(operation);
+                    System.out.println("result:\n" + matrix);
+                }
                 break;
             case 2:
                 //matrix.matrixOperation();
@@ -39,6 +54,7 @@ public class SystemInterface
                 System.out.println("Scalar to multiply 'A' by: ");
                 float scalar = sc.nextFloat(); sc.nextLine();
                 matrix.applyScalar(scalar);
+                System.out.println("result: " + matrix);
                 break;
             case 4:
                 System.out.println("Transpose:\n" + matrix.getTranspose());

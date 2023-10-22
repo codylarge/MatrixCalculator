@@ -128,7 +128,7 @@ public class MatrixUtils
 
     public static void formattingMenu()
     {
-        System.out.println("Format: r2 = 0.2r3 + 3r4 with spaces between each token, starting with the target row. " +
+        System.out.println("Format: r2 = r2 + 0.5r4. starting with 'target row =' and spaces between each token.  " +
         "Scalar operations should be performed in front of the row number.");
     }
 }
