@@ -5,10 +5,14 @@ import java.util.Stack;
 
 public class MatrixUtils
 {
-    public static float[] evaluateRowOperation(String operation, Matrix matrix) {
+    public static float[] evaluateRowOperation(String operation, Matrix matrix)
+    {
         String[] tokens = operation.split("=");
+
         if (tokens.length != 2) {
-            return null; // Invalid operation
+            if(tokens.length == 1) {
+                // TODO: Add way to do operation such as r2 + 5r1, assuming r2 as the target row
+            } else return null;
         }
 
         String targetRow = tokens[0].trim();
@@ -30,8 +34,8 @@ public class MatrixUtils
         int rowLength = matrix.getRow("r2").length;
 
         // Gets the first token in the expression (target row)
-        String[] tokens = expression.split(" "); //TODO: successfully split multi character expressions like 2r1 or r1/2
-        //String[] tokens = expression.split("[+\\-*/]"); //TODO: successfully split multi character expressions like 2r1 or r1/2
+        String[] tokens = expression.split(" ");
+        //String[] tokens = expression.split("[+\\-*/]");
         float[] result = new float[matrix.getRow(tokens[0]).length];
         // Copies the target row into the result array
         System.arraycopy(matrix.getRow(tokens[0]), 0, result, 0, result.length);
@@ -84,9 +88,6 @@ public class MatrixUtils
                         }
                     }
                     break;
-                case "(":
-
-                    break;
                 default:
                     return null; // Invalid operator
             }
@@ -106,9 +107,29 @@ public class MatrixUtils
         return resultRow;
     }
 
+    public static Matrix calculateTranspose(Matrix m)
+    {
+        StringBuilder transposeString = new StringBuilder();
+        int transposeRows = m.getCols();
+        int transposeCols = m.getRows();
+
+        for (int i = 0; i < transposeRows; i++)
+        {
+            float[] column = m.getColumn(i);
+            for (int j = 0; j < transposeCols; j++)
+            {
+                transposeString.append(column[j]).append(" ");
+            }
+            transposeString.append(", ");
+        }
+
+        return new Matrix(transposeString.toString().trim());
+    }
+
     public static void formattingMenu()
     {
-        System.out.println("Format: r2 = r3 + r4 with spaces between each token, starting with the target row followed by a space.");
+        System.out.println("Format: r2 = 0.2r3 + 3r4 with spaces between each token, starting with the target row. " +
+        "Scalar operations should be performed in front of the row number.");
     }
 }
 

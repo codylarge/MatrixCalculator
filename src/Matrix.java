@@ -8,7 +8,6 @@ public class Matrix
     Map<String, float[]> matrix; //Hashmap
     final int rows;
     Scanner sc;
-    MatrixUtils mu = new MatrixUtils();
 
     public Matrix()
     {
@@ -70,7 +69,6 @@ public class Matrix
             operation = sc.nextLine();
             if (operation.equals("?")) MatrixUtils.formattingMenu();
         }
-
         //String operation = "r2 = r3 + r4 / 2";// - Doesn't work, divides by 2 AFTER
         float[] result = MatrixUtils.evaluateRowOperation(operation, this);
 
@@ -79,6 +77,16 @@ public class Matrix
             this.matrix.put(targetRow, result);
         } else {
             System.out.println("Invalid operation.");
+        }
+    }
+    public void applyScalar(float scalar)
+    {
+        for (int i = 1; i < this.getRows() + 1; i++)
+        {
+            for (int j = 0; j < this.getCols(); j++)
+            {
+                this.getRow("r" + i)[j] *= scalar;
+            }
         }
     }
 
@@ -90,7 +98,19 @@ public class Matrix
     {
         return this.matrix.get(targetRow);
     }
-
+    public float[] getColumn(int targetColumn)
+    {
+        float[] column = new float[this.getRows()];
+        for (int i = 1; i < this.getRows() + 1; i++)
+        {
+            column[i - 1] = this.getRow("r" + i)[targetColumn];
+        }
+        return column;
+    }
+    public boolean containsRow(String targetRow)
+    {
+        return this.matrix.containsKey(targetRow);
+    }
     public int getRows()
     {
         return matrix.size();
@@ -99,25 +119,22 @@ public class Matrix
     {
         return matrix.get("r1").length;
     }
+
+    public Matrix clone()
+    {
+        Matrix clone = new Matrix();
+        clone.matrix = this.matrix;
+        return clone;
+    }
+
+    public Matrix getTranspose()
+    {
+        return MatrixUtils.calculateTranspose(this);
+    }
+
     public Map<String, float[]> getMatrix()
     {
         return this.matrix;
-    }
-
-    public boolean containsRow(String targetRow)
-    {
-        return this.matrix.containsKey(targetRow);
-    }
-
-    public void applyScalar(float scalar)
-    {
-        for (int i = 1; i < this.getRows() + 1; i++)
-        {
-            for (int j = 0; j < this.getCols(); j++)
-            {
-                this.getRow("r" + i)[j] *= scalar;
-            }
-        }
     }
 
     public String toString()
