@@ -22,7 +22,8 @@ public class SystemInterface
         System.out.println("2. Matrix Operations");
         System.out.println("3. Multiply by a Scalar");
         System.out.println("4. Find transpose");
-        System.out.println("5. Find Inverse");
+        System.out.println("5. Find Determinant");
+        System.out.println("6. Find Inverse");
 
         int choice = sc.nextInt();
         sc.nextLine();
@@ -40,7 +41,8 @@ public class SystemInterface
                     {
                         System.out.print("Enter the operation(? for formatting): ");
                         operation = sc.nextLine();
-                        if (operation.equals("?")) MatrixUtils.formattingMenu();
+                        if (operation.equals("?"))
+                            MatrixUtils.formattingMenu();
                     }
 
                     matrix.performOperation(operation);
@@ -60,6 +62,10 @@ public class SystemInterface
                 System.out.println("Transpose:\n" + matrix.getTranspose());
                 break;
             case 5:
+                System.out.println("Matrix Determinant: " + MatrixUtils.calculateDeterminant(matrix));
+                System.out.println("\n\nMatrix After: " + matrix);
+                break;
+            case 6:
                 //matrix.getInverse();
                 break;
             default:

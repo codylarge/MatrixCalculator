@@ -5,6 +5,7 @@ public class Console
     {
         SystemInterface sys = new SystemInterface();
         Matrix m = sys.createMatrix("1 2 3, 4 5 6, 7 8 9");
-        sys.matrixMenu(m);
+        Matrix n = sys.createMatrix("1 2, 4 5");
+        sys.matrixMenu(n);
     }
 }

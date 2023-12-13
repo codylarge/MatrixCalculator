@@ -10,6 +10,12 @@ public class Cell
         this.denominator = denominator;
     }
 
+    public Cell(Cell cell)
+    {
+        this.numerator = cell.getNumerator();
+        this.denominator = cell.getDenominator();
+    }
+
     public int getNumerator()
     {
         return numerator;
@@ -25,58 +31,46 @@ public class Cell
         return (float) (numerator / denominator);
     }
 
-    public void multiplyCell(Cell cell)
+    public void multiply(Cell cell)
     {
         this.numerator *= cell.getNumerator();
         this.denominator *= cell.getDenominator();
     }
-    public void divideCell(Cell cell)
+
+    public void divide(Cell cell)
     {
         this.numerator *= cell.getDenominator();
         this.denominator *= cell.getNumerator();
     }
 
-    public void addCell(Cell cell) {
-        // Find a common denominator for addition
-        int commonDenominator = this.denominator * cell.denominator;
-
-        // Adjust the numerators to have the same denominator
-        int newNumerator1 = this.numerator * cell.denominator;
-        int newNumerator2 = cell.numerator * this.denominator;
-
-        // Add the adjusted numerators
-        int resultNumerator = newNumerator1 + newNumerator2;
-
-        // Set the result to the current cell
-        this.numerator = resultNumerator;
-        this.denominator = commonDenominator;
-
-        // Simplify the result by finding the greatest common divisor (GCD)
-        int gcd = gcd(resultNumerator, commonDenominator);
-
-        if (gcd != 1) {
-            this.numerator /= gcd;
-            this.denominator /= gcd;
-        }
+    public void add(Cell cell)
+    {
+        performOperation(cell, true);
     }
 
-    public void subtractCell(Cell cell) {
-        // Find a common denominator for subtraction
+    public void subtract(Cell cell)
+    {
+        performOperation(cell, false);
+    }
+
+    private void performOperation(Cell cell, boolean isAddition)
+    {
+        // Find a common denominator
         int commonDenominator = this.denominator * cell.denominator;
 
         // Adjust the numerators to have the same denominator
         int newNumerator1 = this.numerator * cell.denominator;
         int newNumerator2 = cell.numerator * this.denominator;
 
-        // Subtract the adjusted numerators
-        int resultNumerator = newNumerator1 - newNumerator2;
+        // Perform the operation on adjusted numerators
+        int resultNumerator = isAddition ? newNumerator1 + newNumerator2 : newNumerator1 - newNumerator2;
 
         // Set the result to the current cell
         this.numerator = resultNumerator;
         this.denominator = commonDenominator;
 
         // Simplify the result by finding the greatest common divisor (GCD)
-        int gcd = gcd(resultNumerator, commonDenominator);
+        int gcd = CellUtils.gcd(resultNumerator, commonDenominator);
 
         if (gcd != 1) {
             this.numerator /= gcd;
@@ -88,17 +82,8 @@ public class Cell
     {
         int denominator = 100; // You can adjust this to control the precision of the fraction
         int numerator = Math.round(value * denominator);
-        int gcd = gcd(numerator, denominator);
+        int gcd = CellUtils.gcd(numerator, denominator);
         return new Cell(numerator / gcd, denominator / gcd);
-    }
-
-    public int gcd(int a, int b)
-    {
-        if (b == 0)
-        {
-            return a;
-        }
-        return gcd(b, a % b);
     }
 
     @Override

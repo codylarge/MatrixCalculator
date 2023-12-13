@@ -5,6 +5,12 @@ import java.util.Stack;
 
 public class MatrixUtils
 {
+    /**
+     * Evaluates a row operation in the form of "r2 = r3 + r4 / 2"
+     * @param operation
+     * @param matrix
+     * @return
+     */
     public static Cell[] evaluateRowOperation(String operation, Matrix matrix)
     {
         String[] tokens = operation.split("=");
@@ -29,6 +35,12 @@ public class MatrixUtils
         return result;
     }
 
+    /**
+     * Evaluates basic mathematical expressions
+     * @param expression
+     * @param matrix
+     * @return
+     */
     public static Cell[] evaluateExpression(String expression, Matrix matrix)
     {
         int rowLength = matrix.getRow("r2").length;
@@ -67,23 +79,23 @@ public class MatrixUtils
             switch (operator) {
                 case "+":
                     for (int j = 0; j < result.length; j++) {
-                        result[j].addCell(rowValues[j]);
+                        result[j].add(rowValues[j]);
                     }
                     break;
                 case "-":
                     for (int j = 0; j < result.length; j++) {
-                        result[j].subtractCell(rowValues[j]);
+                        result[j].subtract(rowValues[j]);
                     }
                     break;
                 case "*":
                     for (int j = 0; j < result.length; j++) {
-                        result[j].multiplyCell(rowValues[j]);
+                        result[j].multiply(rowValues[j]);
                     }
                     break;
                 case "/":
                     for (int j = 0; j < result.length; j++) {
                         if (rowValues[j].getNumerator() != 0) {
-                            result[j].divideCell(rowValues[j]);
+                            result[j].divide(rowValues[j]);
                         } else {
                             return null; // Division by zero
                         }
@@ -103,7 +115,7 @@ public class MatrixUtils
 
         for (int i = 0; i < originalRow.length; i++) {
             resultRow[i] = originalRow[i];
-            resultRow[i].multiplyCell(scalar);
+            resultRow[i].multiply(scalar);
         }
 
         return resultRow;
@@ -126,6 +138,22 @@ public class MatrixUtils
         }
 
         return new Matrix(transposeString.toString().trim());
+    }
+
+    public static float calculateDeterminant(Matrix m)
+    {
+        if(m.getRows() != m.getCols()) throw new IllegalArgumentException("Cannot take determinant of non square matrix"); // Matrix must be square
+        if(m.getRows() != 2) throw new IllegalArgumentException("Only 2x2 matrix implemented"); // TODO: Implement determinant for matrices larger than 2x2
+
+        Cell[] row1 = m.getRow("r1");
+        Cell[] row2 = m.getRow("r2");
+
+        Cell ad = new Cell(CellUtils.multiplyCells(row1[0], row2[1]));
+        Cell bc = new Cell(CellUtils.multiplyCells(row2[0], row1[1]));
+        Cell determinantCell = CellUtils.subtractCell(ad, bc);
+
+        float determinant = determinantCell.getDecimalValue();
+        return determinant;
     }
 
     public static void formattingMenu()

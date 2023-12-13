@@ -24,7 +24,7 @@ public class Matrix
     public Matrix(String matrixInput)
     {
         this.matrix = new HashMap<>();
-        String[] commaSeparated = matrixInput.split(","); // Split by commas
+        String[] commaSeparated = matrixInput.split(","); // Split rows by commas
         this.rows = commaSeparated.length;
         fillMatrixFromArray(commaSeparated);
     }
@@ -39,7 +39,6 @@ public class Matrix
             matrix.put("r" + i, row);
         }
     }
-
     private void fillMatrixFromArray(String[] commaSeparatedMatrix)
     {
         int rowIndex = 1;
@@ -70,13 +69,14 @@ public class Matrix
             System.out.println("Invalid operation.");
         }
     }
+
     public void applyScalar(Cell scalar)
     {
         for (int i = 1; i < this.getRows() + 1; i++)
         {
             for (int j = 0; j < this.getCols(); j++)
             {
-                this.getRow("r" + i)[j].multiplyCell(scalar);
+                this.getRow("r" + i)[j].multiply(scalar);
             }
         }
     }
@@ -135,6 +135,6 @@ public class Matrix
         {
             matrixString.append(java.util.Arrays.toString(matrix.get("r" + i))).append("\n");
         }
-        return matrixString.toString();
+        return "\n" + matrixString.toString();
     }
 }
